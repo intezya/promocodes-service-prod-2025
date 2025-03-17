@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "127.0.0.1:5454:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "postgres"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgdata001:/var/lib/postgresql/data
+
+  redis:
+    image: redis
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  antifraud:
+    image: lodthe/prod-backend-antifraud:latest
+    ports:
+      - "127.0.0.1:9090:9090"
+    environment:
+      CACHE_DURATION_MS: 5000
+      SERVER_PORT: 9090
+volumes:
+  pgdata001:
+    name: pgdata001
